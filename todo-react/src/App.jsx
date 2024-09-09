@@ -1,9 +1,9 @@
 import "./index.css";
-
+import TodoForm from "./components/TodoForm";
 function App() {
   return (
     <>
-      <h1 className="text-x1 font-bold text-red-500">Hello world</h1>
+      <TodoForm />
     </>
   );
 }
