@@ -7,9 +7,21 @@ function TodoForm() {
     e.preventDefault();
     console.log(value);
     if (value) {
-      setTasks([...tasks, value]);
+      const newTask = {
+        id: Date.now(),
+        text: value,
+        completed: false,
+      };
+      setTasks([...tasks, newTask]);
       setValue("");
     }
+  };
+  const toggleTaskCompletion = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
   };
   return (
     <>
@@ -35,12 +47,16 @@ function TodoForm() {
             </button>
           </div>
           <ul className=" flex flex-col text-start w-80 gap-4  ">
-            {tasks.map((task, index) => (
+            {tasks.map((task) => (
               <li
-                className="p-2 border-black bg-white drop-shadow-md rounded-md"
-                key={index}
+                key={task.id}
+                //Onclick is eventListener in react, so it can create toggle
+                onClick={() => toggleTaskCompletion(task.id)}
+                className={`p-2 border-black bg-white drop-shadow-md rounded-md cursor-pointer ${
+                  task.completed ? "bg-green-300 line-through" : "bg-white"
+                } `}
               >
-                {task}
+                {task.text}
               </li>
             ))}
           </ul>
