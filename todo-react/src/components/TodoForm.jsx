@@ -1,11 +1,12 @@
 import { useState } from "react";
-//import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Editing from "./Editing";
+import Icons from "./icons";
 function TodoForm() {
   const [value, setValue] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [editingTaskId, setEditingTaskId] = useState(null);
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(value);
     if (value) {
       const newTask = {
         id: Date.now(),
@@ -23,46 +24,75 @@ function TodoForm() {
       )
     );
   };
+
+  //Editing did not update properly and still get old version, so use prevTasks instead
+  const handleUpdateTask = (id, updatedText) => {
+    setTasks((prevTasks) => {
+      const newTasks = prevTasks.map((task) =>
+        task.id === id ? { ...task, text: updatedText } : task
+      );
+      console.log("Tasks after update", newTasks);
+      return newTasks;
+    });
+    setEditingTaskId(null);
+  };
+
+  const handleDeleteTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
   return (
-    <>
-      <div className="h-screen flex justify-center items-center">
-        <form
-          className="flex flex-col items-center text-center bg-[#91A2FF] w-100  p-10 drop-shadow-2xl rounded-md"
-          onSubmit={handleSubmit}
-        >
-          <h1 className="text-xl  tracking-wider">Todo List</h1>
-          <div className="my-5">
-            <input
-              type="text"
-              value={value}
-              className="p-2 mx-3 drop-shadow-md rounded-md"
-              placeholder="Adding your task"
-              onChange={(e) => setValue(e.target.value)}
-            />
-            <button
-              className="bg-[#4200FF] text-white w-20 p-2 drop-shadow-md rounded-md border-2 border-blue-800 hover:bg-white hover:border-blue-800 hover:text-blue-800 ease-in-out duration-100 "
-              type="submit"
+    <div className="h-screen flex justify-center items-center">
+      <form
+        className="flex flex-col items-center text-center bg-[#91A2FF] w-100 p-10 drop-shadow-2xl rounded-md"
+        onSubmit={handleSubmit}
+      >
+        <h1 className="text-xl  tracking-wider">Todo List</h1>
+        <div className="my-5">
+          <input
+            type="text"
+            value={value}
+            className="p-2 mx-3 drop-shadow-md rounded-md"
+            placeholder="Adding your task"
+            onChange={(e) => setValue(e.target.value)}
+          />
+          <button
+            className="bg-[#4200FF] text-white w-20 p-2 drop-shadow-md rounded-md border-2 border-blue-800 hover:bg-white hover:border-blue-800 hover:text-blue-800 ease-in-out duration-100 "
+            type="submit"
+          >
+            Add
+          </button>
+        </div>
+        <ul className=" flex flex-col text-start w-80 gap-4  ">
+          {tasks.map((task) => (
+            <li
+              key={task.id}
+              //Onclick is eventListener in react, so it can create toggle
+              onClick={() => toggleTaskCompletion(task.id)}
+              className={`p-2 border-black bg-white drop-shadow-md rounded-md cursor-pointer flex justify-between pl-5  ${
+                task.completed ? " line-through text-gray-500" : "none"
+              } `}
             >
-              Add
-            </button>
-          </div>
-          <ul className=" flex flex-col text-start w-80 gap-4  ">
-            {tasks.map((task) => (
-              <li
-                key={task.id}
-                //Onclick is eventListener in react, so it can create toggle
-                onClick={() => toggleTaskCompletion(task.id)}
-                className={`p-2 border-black bg-white drop-shadow-md rounded-md cursor-pointer ${
-                  task.completed ? "bg-green-300 line-through" : "bg-white"
-                } `}
-              >
-                {task.text}
-              </li>
-            ))}
-          </ul>
-        </form>
-      </div>
-    </>
+              {editingTaskId === task.id ? (
+                <Editing
+                  key={task.id}
+                  task={task}
+                  editTodo={handleUpdateTask}
+                />
+              ) : (
+                <>
+                  <span>{task.text}</span>
+                  <Icons
+                    onEditClick={() => setEditingTaskId(task.id)}
+                    onDeleteClick={() => handleDeleteTask(task.id)}
+                    completed={task.completed}
+                  />
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      </form>
+    </div>
   );
 }
 
