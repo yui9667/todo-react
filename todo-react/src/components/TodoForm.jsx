@@ -17,6 +17,7 @@ function TodoForm() {
       setValue("");
     }
   };
+  //This is for adding mark to each tasks. so use map method to check all tasks and if my task.id and id works, completed selection will be opposite boolean (true/false) because of ! otherwise just no change anything and show the task
   const toggleTaskCompletion = (id) => {
     setTasks(
       tasks.map((task) =>
@@ -25,18 +26,19 @@ function TodoForm() {
     );
   };
 
-  //Editing did not update properly and still get old version, so use prevTasks instead
+  //Editing did not update properly and still gets the old version, so use prevTasks instead, and the same logic here as toggleCompletion
+  //Added return here so I can replace old task to new task (prev called functional form must use return )
   const handleUpdateTask = (id, updatedText) => {
     setTasks((prevTasks) => {
       const newTasks = prevTasks.map((task) =>
         task.id === id ? { ...task, text: updatedText } : task
       );
-      console.log("Tasks after update", newTasks);
+
       return newTasks;
     });
     setEditingTaskId(null);
   };
-
+  //if the task.id is not match to id. then the task will keep in the form.
   const handleDeleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
@@ -66,8 +68,6 @@ function TodoForm() {
           {tasks.map((task) => (
             <li
               key={task.id}
-              //Onclick is eventListener in react, so it can create toggle
-              onClick={() => toggleTaskCompletion(task.id)}
               className={`p-2 border-black bg-white drop-shadow-md rounded-md cursor-pointer flex justify-between pl-5  ${
                 task.completed ? " line-through text-gray-500" : "none"
               } `}
@@ -84,7 +84,7 @@ function TodoForm() {
                   <Icons
                     onEditClick={() => setEditingTaskId(task.id)}
                     onDeleteClick={() => handleDeleteTask(task.id)}
-                    completed={task.completed}
+                    onToggleCompletion={() => toggleTaskCompletion(task.id)}
                   />
                 </>
               )}

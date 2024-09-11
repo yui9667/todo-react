@@ -3,17 +3,14 @@ import propTypes from "prop-types";
 //Using the codes as same as TodoForm.jsx. But I added "task.text" so when a user press the editing icon, it shows current task in the input. If task.text is undefined, "" helps to avoid error
 const Editing = ({ task, editTodo }) => {
   const [value, setValue] = useState(task.text || "");
-  // useEffect(() => {
-  //   setValue(task.text || "");
-  // }, [task.text]);
   const handleUpdate = (e) => {
     e.preventDefault();
     //if a user write something, it appears on display.
+    if (value.trim() !== "") {
+      console.log("Updating task:", task.id, value);
 
-    console.log("Updating task:", task.id, value);
-
-    editTodo(task.id, value);
-    setValue("");
+      editTodo(task.id, value);
+    }
   };
 
   return (
