@@ -1,12 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPenNib, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPenNib, faTrash } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
-const Icons = ({
-  onEditClick,
-  onDeleteClick,
-  onToggleCompletion,
-  completed,
-}) => {
+const Icons = ({ onEditClick, onDeleteClick }) => {
   return (
     <div className="mr-3">
       <FontAwesomeIcon
@@ -26,20 +21,13 @@ const Icons = ({
           onDeleteClick();
         }}
       />
-      <FontAwesomeIcon
-        icon={faCheck} // You can change this to any other icon for task completion
-        style={{ color: completed ? "#00ff00" : "#ff0000" }}
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent event bubbling
-          onToggleCompletion();
-        }}
-      />
     </div>
   );
 };
+//It's the same as Editing.jsx
+//if I remove propTypes, react get confused that Icons'props not only props, but also functions because we use them as function in TodoForm as callback
 Icons.propTypes = {
   onEditClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
-  onToggleCompletion: PropTypes.func.isRequired,
 };
 export default Icons;

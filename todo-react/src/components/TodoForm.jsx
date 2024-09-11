@@ -1,9 +1,13 @@
 import { useState } from "react";
 import Editing from "./Editing";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import Icons from "./icons";
 function TodoForm() {
   const [value, setValue] = useState("");
+  //Use useState for array so need empty array
   const [tasks, setTasks] = useState([]);
+  //initially set to null, meaning no task is being edited.
   const [editingTaskId, setEditingTaskId] = useState(null);
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -68,11 +72,23 @@ function TodoForm() {
           {tasks.map((task) => (
             <li
               key={task.id}
-              className={`p-2 border-black bg-white drop-shadow-md rounded-md cursor-pointer flex justify-between pl-5  ${
+              className={`p-2 border-black bg-white drop-shadow-md rounded-md cursor-pointer flex justify-between pl-3 ${
                 task.completed ? " line-through text-gray-500" : "none"
               } `}
             >
+              {editingTaskId !== task.id && (
+                //Use if condition to remove this icon when an user press the task is not editing mode, so this icon will be in display
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  size="xl"
+                  style={{ color: task.completed ? "#4CAF50" : "#ccc" }}
+                  onClick={() => {
+                    toggleTaskCompletion(task.id);
+                  }}
+                />
+              )}
               {editingTaskId === task.id ? (
+                //opposite of faCheckCircle, if editingTaskId equal task.id then, jump to Editing.jsx and update input and button appears, otherwise it shows current task.
                 <Editing
                   key={task.id}
                   task={task}
@@ -82,9 +98,9 @@ function TodoForm() {
                 <>
                   <span>{task.text}</span>
                   <Icons
+                    //jump to icons.jsx
                     onEditClick={() => setEditingTaskId(task.id)}
                     onDeleteClick={() => handleDeleteTask(task.id)}
-                    onToggleCompletion={() => toggleTaskCompletion(task.id)}
                   />
                 </>
               )}
